@@ -16,7 +16,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 - douph1/openjdk-installer#1
 - #1
 
--  fix java version compare [#138](../../../../../AdoptOpenJDK/openjdk-installer#138)
+-  fix java version compare [#138](../../../../../AdoptOpenJDK/openjdk-installer/pull#138)
 
 
 
