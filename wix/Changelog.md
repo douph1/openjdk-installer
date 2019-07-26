@@ -5,6 +5,9 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 
+! is used for pull/merge resquest number
+\# is used for issue number
+
 ## 2019-07-25
 
 ### Fixed
@@ -16,7 +19,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 - douph1/openjdk-installer#1
 - #1
 
--  fix java version compare [#138](../../../../../AdoptOpenJDK/openjdk-installer/pull/138) [#123](../../../../../AdoptOpenJDK/openjdk-installer/issues/123)
+-  fix java version compare [!138](../../../../../AdoptOpenJDK/openjdk-installer/pull/138) [#123](../../../../../AdoptOpenJDK/openjdk-installer/issues/123)
 
 
 
