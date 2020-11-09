@@ -113,56 +113,34 @@ FOR %%A IN (%ARCH%) DO (
     )
 
     SET SETUP_RESOURCES_DIR=.\Resources
-	
-	REM STANDARD LAYOUT
-	SET REPRO_DIR=.\SourceDir\!PRODUCT_SKU!!PRODUCT_MAJOR_VERSION!\!PACKAGE_TYPE!\!FOLDER_PLATFORM!\jdk-%PRODUCT_MAJOR_VERSION%.%PRODUCT_MINOR_VERSION%.%PRODUCT_MAINTENANCE_VERSION%
-	IF !PRODUCT_CATEGORY! == jre (
-		SET REPRO_DIR=!REPRO_DIR!-!PRODUCT_CATEGORY!
-	)
-	IF NOT EXIST "!REPRO_DIR!" (
-		ECHO First !REPRO_DIR! not exists
-		IF !PRODUCT_MAJOR_VERSION! == 8 (
-			SET REPRO_DIR=.\SourceDir\!PRODUCT_SKU!!PRODUCT_MAJOR_VERSION!\!PACKAGE_TYPE!\!FOLDER_PLATFORM!\jdk%PRODUCT_MAJOR_VERSION%u%PRODUCT_MAINTENANCE_VERSION%-b%PRODUCT_BUILD_NUMBER%
-			IF !PRODUCT_CATEGORY! == jre (
-				SET REPRO_DIR=!REPRO_DIR!-!PRODUCT_CATEGORY!
-			)
-			IF NOT EXIST "!REPRO_DIR!" (
-				ECHO Second !REPRO_DIR! not exists
-				GOTO FAILED
-			)
-		) ELSE (
-			SET REPRO_DIR=.\SourceDir\!PRODUCT_SKU!!PRODUCT_MAJOR_VERSION!\!PACKAGE_TYPE!\!FOLDER_PLATFORM!\jdk-%PRODUCT_MAJOR_VERSION%+%PRODUCT_BUILD_NUMBER%
-			IF !PRODUCT_CATEGORY! == jre (
-				SET REPRO_DIR=!REPRO_DIR!-!PRODUCT_CATEGORY!
-			)
-			IF NOT EXIST "!REPRO_DIR!" (
-				ECHO Second !REPRO_DIR! not exists
-				SET REPRO_DIR=.\SourceDir\!PRODUCT_SKU!!PRODUCT_MAJOR_VERSION!\!PACKAGE_TYPE!\!FOLDER_PLATFORM!\jdk-%PRODUCT_MAJOR_VERSION%.%PRODUCT_MINOR_VERSION%.%PRODUCT_MAINTENANCE_VERSION%+%PRODUCT_BUILD_NUMBER%
-				IF !PRODUCT_CATEGORY! == jre (
-					SET REPRO_DIR=!REPRO_DIR!-!PRODUCT_CATEGORY!
-				)
-				IF NOT EXIST "!REPRO_DIR!" (
-					ECHO Third !REPRO_DIR! not exists
-					SET REPRO_DIR=.\SourceDir\!PRODUCT_SKU!!PRODUCT_MAJOR_VERSION!\!PACKAGE_TYPE!\!FOLDER_PLATFORM!\jdk-%PRODUCT_MAJOR_VERSION%.%PRODUCT_MINOR_VERSION%.%PRODUCT_MAINTENANCE_VERSION%.%PRODUCT_PATCH_VERSION%+%PRODUCT_BUILD_NUMBER%
-					IF !PRODUCT_CATEGORY! == jre (
-						SET REPRO_DIR=!REPRO_DIR!-!PRODUCT_CATEGORY!
-					)
-					IF NOT EXIST "!REPRO_DIR!" (
-						ECHO Fourth !REPRO_DIR! not exists
-						REM try folder for JDK-Latest defined in CreateSourceFolder.AdoptOpenJDK.ps1
-						SET REPRO_DIR=.\SourceDir\!PRODUCT_SKU!-Latest\!PACKAGE_TYPE!\!FOLDER_PLATFORM!\!ADOPT_NAME!
-						IF NOT EXIST "!REPRO_DIR!" (
-							ECHO OpenJDK-Latest unnumbered !REPRO_DIR! does not exist
-							ECHO SOURCE Dir not found / failed
-							ECHO Listing directory :
-							dir /a:d /s /b /o:n SourceDir
-							GOTO FAILED
-						)
-					)
-				)
-			)
-		)
-	)
+
+    FOR %%P IN (
+        jdk-%PRODUCT_MAJOR_VERSION%.%PRODUCT_MINOR_VERSION%.%PRODUCT_MAINTENANCE_VERSION%
+        jdk%PRODUCT_MAJOR_VERSION%u%PRODUCT_MAINTENANCE_VERSION%-b%PRODUCT_BUILD_NUMBER%
+        jdk-!JEP322_BASE_NAME!
+    )
+        DO (
+        SET REPRO_DIR=.\SourceDir\!PRODUCT_SKU!!PRODUCT_MAJOR_VERSION!\!PACKAGE_TYPE!\!FOLDER_PLATFORM!\%%P
+        IF !PRODUCT_CATEGORY! == jre (
+                SET REPRO_DIR=!REPRO_DIR!-!PRODUCT_CATEGORY!
+        )
+        IF EXIST "!REPRO_DIR!" (
+            goto CONTINUE
+        )
+    )
+    IF NOT EXIST "!REPRO_DIR!" (
+            ECHO !REPRO_DIR! not exists
+            REM try folder for JDK-Latest defined in CreateSourceFolder.AdoptOpenJDK.ps1
+            SET REPRO_DIR=.\SourceDir\!PRODUCT_SKU!-Latest\!PACKAGE_TYPE!\!FOLDER_PLATFORM!\!ADOPT_NAME!
+            IF NOT EXIST "!REPRO_DIR!" (
+                    ECHO OpenJDK-Latest unnumbered !REPRO_DIR! does not exist
+                    ECHO SOURCE Dir not found / failed
+                    ECHO Listing directory :
+                    dir /a:d /s /b /o:n SourceDir
+                    GOTO FAILED
+            )
+    )
+    :CONTINUE
 
     ECHO Source dir used : !REPRO_DIR!
 
